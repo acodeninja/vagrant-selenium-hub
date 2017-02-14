@@ -1,0 +1,40 @@
+---
+- hosts: all
+  tasks:
+    - name: Update repositories cache and install "openjdk-8-jdk-headless" package
+      become: true
+      apt:
+        name: openjdk-8-jdk-headless
+        update_cache: yes
+    - name: Create SSH folder
+      file:
+        path: /home/vagrant/.ssh
+        state: directory
+        mode: 0700
+    - name: Get vagrant insecure keys
+      get_url:
+        url: https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
+        dest: /home/vagrant/.ssh/authorized_keys
+        mode: 0600
+    - name: Mount Guest additions
+      become: true
+      mount:
+        name: /mnt
+        src: /home/vagrant/VBoxGuestAdditions.iso
+        opts: loop,ro
+        state: mounted
+        fstype: iso9660
+    - name: Install Guest additions
+      become: true
+      command: /mnt/VBoxLinuxAdditions.run
+    - name: Unmount Guest additions
+      become: true
+      mount:
+        name: /mnt
+        src: /home/vagrant/VBoxGuestAdditions.iso
+        opts: loop,ro
+        state: absent
+        fstype: iso9660
+    - name: Remove Guest additions
+      become: true
+      command: rm VBoxGuestAdditions.iso
