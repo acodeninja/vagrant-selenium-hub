@@ -65,3 +65,9 @@
         daemon_reload: true
         name: selenium.service
         enabled: true
+    - name: Remove build tools
+      become: true
+      apt:
+        name: build-essential
+        state: absent
+        autoremove: true
