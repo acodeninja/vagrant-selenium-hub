@@ -1,0 +1,11 @@
+[Unit]
+Description=Manage a selenium grid hub
+Documentation=https://github.com/thejsninja/vagrant-selenium-hub
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/java -jar /home/vagrant/selenium-standalone-server.jar -role hub -log /var/log/selenium
+ExecStop=kill `pidof java`
+
+[Install]
+WantedBy=multi-user.target

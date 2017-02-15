@@ -1,11 +1,15 @@
 ---
 - hosts: all
   tasks:
-    - name: Update repositories cache and install "openjdk-8-jdk-headless" package
+    - name: Update repositories cache
+      become: true
+      apt:
+        update_cache: yes
+    - name: Install Headless JDK
       become: true
       apt:
         name: openjdk-8-jdk-headless
-        update_cache: yes
+        state: latest
     - name: Create SSH folder
       file:
         path: /home/vagrant/.ssh
@@ -37,4 +41,33 @@
         fstype: iso9660
     - name: Remove Guest additions
       become: true
-      command: rm VBoxGuestAdditions.iso
+      file:
+        path: /home/vagrant/VBoxGuestAdditions.iso
+        state: absent
+    - name: Download selenium server
+      get_url:
+        url: http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar
+        dest: /home/vagrant/selenium-standalone-server.jar
+    - name: Install selenium standalone service
+      become: true
+      copy:
+        src: "{{ playbook_dir }}/selenium.service"
+        dest: /etc/systemd/system/selenium.service
+        owner: root
+    - name: Create selenium log file
+      become: true
+      file:
+        path: /var/log/selenium
+        state: touch
+    - name: Ensure selenium service will start on boot
+      become: true
+      systemd:
+        daemon_reload: true
+        name: selenium.service
+        enabled: true
+    - name: Remove build tools
+      become: true
+      apt:
+        name: build-essential
+        state: absent
+        autoremove: true
