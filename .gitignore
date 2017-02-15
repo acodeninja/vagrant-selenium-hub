@@ -1,5 +1,6 @@
 # Ignore build artefacts
 .vagrant/
+output-*/
 packer_cache/
 *.retry
 *.box
