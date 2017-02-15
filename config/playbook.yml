@@ -37,7 +37,9 @@
         fstype: iso9660
     - name: Remove Guest additions
       become: true
-      command: rm VBoxGuestAdditions.iso
+      file:
+        path: /home/vagrant/VBoxGuestAdditions.iso
+        state: absent
     - name: Download selenium server
       get_url:
         url: http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar
