@@ -1,6 +1,6 @@
 [Unit]
 Description=Manage a selenium grid hub
-Documentation=
+Documentation=https://github.com/thejsninja/vagrant-selenium-hub
 
 [Service]
 ExecStart=/usr/bin/java -jar /home/vagrant/selenium-standalone-server.jar -role hub
