@@ -1,0 +1,73 @@
+---
+- hosts: all
+  tasks:
+    - name: Update repositories cache
+      become: true
+      apt:
+        update_cache: yes
+    - name: Install Headless JDK
+      become: true
+      apt:
+        name: openjdk-8-jdk-headless
+        state: latest
+    - name: Create SSH folder
+      file:
+        path: /home/vagrant/.ssh
+        state: directory
+        mode: 0700
+    - name: Get vagrant insecure keys
+      get_url:
+        url: https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub
+        dest: /home/vagrant/.ssh/authorized_keys
+        mode: 0600
+    - name: Mount Guest additions
+      become: true
+      mount:
+        name: /mnt
+        src: /home/vagrant/VBoxGuestAdditions.iso
+        opts: loop,ro
+        state: mounted
+        fstype: iso9660
+    - name: Install Guest additions
+      become: true
+      command: /mnt/VBoxLinuxAdditions.run
+    - name: Unmount Guest additions
+      become: true
+      mount:
+        name: /mnt
+        src: /home/vagrant/VBoxGuestAdditions.iso
+        opts: loop,ro
+        state: absent
+        fstype: iso9660
+    - name: Remove Guest additions
+      become: true
+      file:
+        path: /home/vagrant/VBoxGuestAdditions.iso
+        state: absent
+    - name: Download selenium server
+      get_url:
+        url: http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar
+        dest: /home/vagrant/selenium-standalone-server.jar
+    - name: Install selenium standalone service
+      become: true
+      copy:
+        src: "{{ playbook_dir }}/selenium.service"
+        dest: /etc/systemd/system/selenium.service
+        owner: root
+    - name: Create selenium log file
+      become: true
+      file:
+        path: /var/log/selenium.log
+        state: touch
+    - name: Ensure selenium service will start on boot
+      become: true
+      systemd:
+        daemon_reload: true
+        name: selenium.service
+        enabled: true
+    - name: Remove build tools
+      become: true
+      apt:
+        name: build-essential
+        state: absent
+        autoremove: true
