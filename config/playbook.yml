@@ -1,11 +1,15 @@
 ---
 - hosts: all
   tasks:
-    - name: Update repositories cache and install "openjdk-8-jdk-headless" package
+    - name: Update repositories cache
+      become: true
+      apt:
+        update_cache: yes
+    - name: Install Headless JDK
       become: true
       apt:
         name: openjdk-8-jdk-headless
-        update_cache: yes
+        state: latest
     - name: Create SSH folder
       file:
         path: /home/vagrant/.ssh
