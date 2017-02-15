@@ -1,0 +1,10 @@
+[Unit]
+Description=Manage a selenium grid hub
+Documentation=
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/java -jar /home/vagrant/selenium-standalone-server.jar -role hub
+
+[Install]
+WantedBy=multi-user.target
