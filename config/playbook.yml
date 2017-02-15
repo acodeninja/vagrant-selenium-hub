@@ -45,7 +45,8 @@
         url: http://selenium-release.storage.googleapis.com/3.0/selenium-server-standalone-3.0.1.jar
         dest: /home/vagrant/selenium-standalone-server.jar
     - name: Install selenium standalone service
+      become: true
       copy:
-        src: "{{ playbook_dir }}/config/selenium.service"
+        src: "{{ playbook_dir }}/selenium.service"
         dest: /etc/systemd/system/selenium.service
         owner: root
