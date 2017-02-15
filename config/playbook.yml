@@ -59,3 +59,9 @@
       file:
         path: /var/log/selenium
         state: touch
+    - name: Ensure selenium service will start on boot
+      become: true
+      systemd:
+        daemon_reload: true
+        name: selenium.service
+        enabled: true
