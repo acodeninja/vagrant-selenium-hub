@@ -54,3 +54,8 @@
         src: "{{ playbook_dir }}/selenium.service"
         dest: /etc/systemd/system/selenium.service
         owner: root
+    - name: Create selenium log file
+      become: true
+      file:
+        path: /var/log/selenium
+        state: touch
