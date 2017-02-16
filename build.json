@@ -45,6 +45,6 @@
     "post-processors": [{
         "type": "vagrant",
         "compression_level": 6,
-        "output": "selenium-hub.box"
+        "output": "selenium-hub-{{timestamp}}.box"
     }]
 }
